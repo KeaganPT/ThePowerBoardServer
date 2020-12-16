@@ -1,9 +1,20 @@
-const express = require('express');
-const router = express.Router();
+const router = require("express").Router();
+const { Power } = require('../models');
 
-router.get('/testboy', function(req, res)
-{
-    res.send('HEY you!')
-})
+router.post('/', (req, res) => {
+    Power.create({
+        powerName: req.body.powerName,
+        description: req.body.description
+    })
+    .then(
+        function powerCreated(power){
+            res.json({
+                power:power,
+                message: "Your power has been made and added to the database"
+            });
+        }
+    )
+});
+
 
 module.exports = router
