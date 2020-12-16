@@ -2,15 +2,15 @@ const {DataTypes} = require('sequelize');
 const db = require('../db');
 
 const Character = db.define('characters', {
-    characterName = {
+    characterName: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    tags = {
+    tags: {
         type: DataTypes.ARRAY(DataTypes.TEXT),
         allowNull: true
     },
-    description = {
+    description: {
         type: DataTypes.STRING(2000),
         allowNull: false
     }
