@@ -1,5 +1,6 @@
 const router = require("express").Router();
-const { Power } = require('../models');
+const { Power, User } = require('../models');
+
 
 const validateSession = require('../middleware/validateSession');
 
@@ -7,7 +8,8 @@ const validateSession = require('../middleware/validateSession');
 router.post('/', validateSession,(req, res) => {
     Power.create({
         powerName: req.body.powerName,
-        description: req.body.description
+        description: req.body.description,
+        userId: req.user.id
     })
     .then(
         function powerCreated(power){
@@ -20,11 +22,13 @@ router.post('/', validateSession,(req, res) => {
     .catch(err => res.status(500).json({error: err}))
 });
 
-router.get('/', (req,res) => {
-    Power.findAll()
+router.get('/',(req,res) => {
+    Power.findAll( {include: {model: User}})
     .then(powers => res.status(200).json(powers))
     .catch(err => res.status(500).json({ error: err}))
 })
+
+
 
 router.put('/:id', validateSession, (req,res) => {
     const query = req.params.id;
