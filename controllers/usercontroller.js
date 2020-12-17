@@ -5,11 +5,11 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 
-router.post('/signup', (req,res) => {
+router.post('/register', (req,res) => {
     User.create({
         email: req.body.email,
         userName: req.body.userName,
-        password: bcrypt.hashSync(req.body.user.password, 13)
+        password: bcrypt.hashSync(req.body.password, 13)
     })
     .then(
         function userRegistered(user) {
