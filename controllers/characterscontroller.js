@@ -1,11 +1,15 @@
 const router = require('express').Router();
 const {Character} = require('../models');
 
-router.post('/', (req,res) => {
+const validateSession = require('../middleware/validateSession');
+
+
+router.post('/', validateSession,(req,res) => {
     Character.create({
         characterName: req.body.characterName,
         tags: req.body.tags,
-        description: req.body.description
+        description: req.body.description,
+        userId: req.user.id
     })
     .then(
         function characterCreated(character){
@@ -25,7 +29,7 @@ router.get('/', (req, res) => {
 })
 
 
-router.put('/:id', (req,res) => {
+router.put('/:id', validateSession,(req,res) => {
     const query = req.params.id;
     Character.update(req.body, {where: {id: query}})
     .then((characterUpdated) => {
@@ -41,7 +45,7 @@ router.put('/:id', (req,res) => {
     .catch((err) => res.json({ error: err}))
 });
 
-router.delete('/:id', (req,res) => {
+router.delete('/:id', validateSession, (req,res) => {
     Character.destroy({
         where: {id: req.params.id}
     })
