@@ -1,16 +1,24 @@
 require('dotenv').config();
 
 const express = require('express');
-const  app = express();
+const app = express();
 const db = require('./db');
 
 const controllers = require('./controllers')
-
 app.use(express.json())
 
-app.use("/powers", controllers.powerscontroller)
+app.use(require('./middleware/headers'))
 
-db.sync();
-app.listen(process.env.PORT, function() {
-    console.log(`App is listening on ${process.env.PORT}`)
-})
+app.use("/user", controllers.usercontroller)
+app.use("/powers", controllers.powerscontroller)
+app.use("/character", controllers.charactercontroller)
+
+db.authenticate()
+.then(() => db.sync()) // => {force:true}
+.then(() => {
+    app.listen(process.env.PORT, () => console.log(`[Server:] App is listening on Port ${process.env.PORT}`));
+    })
+    .catch((err) => {
+        console.log("[server:] Server Crashed");
+        console.error(err);
+    })
