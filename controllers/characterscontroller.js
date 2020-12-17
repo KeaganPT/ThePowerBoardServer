@@ -5,7 +5,8 @@ router.post('/', (req,res) => {
     Character.create({
         characterName: req.body.characterName,
         tags: req.body.tags,
-        description: req.body.description
+        description: req.body.description,
+        userId: req.user.id
     })
     .then(
         function characterCreated(character){
