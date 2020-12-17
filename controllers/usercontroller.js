@@ -1,15 +1,17 @@
 const router = require('express').Router();
-const {User} = require('../models');
+const {User, Power, Character} = require('../models');
 
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+const validateSession = require('../middleware/validateSession');
 
 router.post('/register', (req,res) => {
     User.create({
         email: req.body.email,
         userName: req.body.userName,
-        password: bcrypt.hashSync(req.body.password, 13)
+        password: bcrypt.hashSync(req.body.password, 13),
+        isAdmin: req.body.isAdmin
     })
     .then(
         function userRegistered(user) {
@@ -52,5 +54,26 @@ router.post('/login', function(req,res) {
     })
     .catch(err => res.status(500).json({error: err}))
 })
+
+router.get('/mine', validateSession, (req,res) => {
+    User.findOne({where: {id: req.user.id}, include:[{model: Power }, {model: Character}] })
+    .then(user => res.status(200).json(user))
+    .catch(err => res.status(500).json({ error: err}))
+})
+
+router.put('/:id', validateSession, (req,res) => {
+    const query = req.params.id;
+    User.update( {password: bcrypt.hashSync(req.body.password, 13)}, {where: {id: query}})
+    .then((userUpdated) => {
+        User.findOne({ where: {id: query}}).then((locatedUpdateUser) => {
+            res.status(200).json({
+                user: locatedUpdateUser,
+                message: "user has been updated.",
+                userChanged: userUpdated,
+            })
+        })
+    })
+    .catch((err) => res.json({ error: err }))
+});
 
 module.exports = router

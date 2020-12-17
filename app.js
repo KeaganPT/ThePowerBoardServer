@@ -14,7 +14,7 @@ app.use("/powers", controllers.powerscontroller)
 app.use("/character", controllers.charactercontroller)
 
 db.authenticate()
-.then(() => db.sync({})) // => {force:true}
+.then(() => db.sync()) // => {force:true}
 .then(() => {
     app.listen(process.env.PORT, () => console.log(`[Server:] App is listening on Port ${process.env.PORT}`));
     })
