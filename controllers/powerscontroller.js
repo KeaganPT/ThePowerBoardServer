@@ -1,7 +1,10 @@
 const router = require("express").Router();
 const { Power } = require('../models');
 
-router.post('/', (req, res) => {
+const validateSession = require('../middleware/validateSession');
+
+
+router.post('/', validateSession,(req, res) => {
     Power.create({
         powerName: req.body.powerName,
         description: req.body.description
@@ -14,6 +17,7 @@ router.post('/', (req, res) => {
             });
         }
     )
+    .catch(err => res.status(500).json({error: err}))
 });
 
 router.get('/', (req,res) => {
@@ -22,7 +26,7 @@ router.get('/', (req,res) => {
     .catch(err => res.status(500).json({ error: err}))
 })
 
-router.put('/:id', (req,res) => {
+router.put('/:id', validateSession, (req,res) => {
     const query = req.params.id;
     Power.update(req.body, {where: {id: query}})
     .then((powerUpdated) => {
@@ -37,7 +41,7 @@ router.put('/:id', (req,res) => {
     .catch((err) => res.json({ error: err }))
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', validateSession,(req, res) => {
     Power.destroy({
         where: {id: req.params.id}
     })
