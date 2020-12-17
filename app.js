@@ -8,7 +8,9 @@ const controllers = require('./controllers')
 
 app.use(express.json())
 
+app.use("/user", controllers.usercontroller)
 app.use("/powers", controllers.powerscontroller)
+app.use("/character", controllers.charactercontroller)
 
 db.sync();
 app.listen(process.env.PORT, function() {
