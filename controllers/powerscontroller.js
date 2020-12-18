@@ -28,6 +28,17 @@ router.get('/',(req,res) => {
     .catch(err => res.status(500).json({ error: err}))
 })
 
+router.get('/:powerName', validateSession, async (req,res) => {
+    try {
+        let powers = await Power.findAll({ where: {powerName: req.params.powerName}, include: {model: User}})
+        res.status(200).json({
+            powers:powers
+        })
+    } catch (error) {
+        
+    }
+})
+
 
 
 router.put('/:id', validateSession, (req,res) => {
