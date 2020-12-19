@@ -11,7 +11,7 @@ router.post('/register', (req,res) => {
         email: req.body.email,
         userName: req.body.userName,
         password: bcrypt.hashSync(req.body.password, 13),
-        isAdmin: req.body.isAdmin
+        role: req.body.role
     })
     .then(
         function userRegistered(user) {
