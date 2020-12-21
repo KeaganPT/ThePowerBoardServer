@@ -43,38 +43,55 @@ router.get('/:powerName', validateSession, async (req, res) => {
 
 
 
-router.put('/:id', validateSession, (req, res) => {
-    const query = req.params.id;
-    let power = Power.findOne({ where: { id: query } })
+router.put('/:id', validateSession, async (req, res) => {
+    try {
+        const query = req.params.id;
+        let power = await Power.findOne({ where: { id: query } })
 
-    if (power.userId === req.user.id || req.user.role === 'admin') {
+        console.log('power: ', power)
+        console.log('query', query)
 
-        Power.update(req.body, { where: { id: query } })
-            .then((powerUpdated) => {
-                Power.findOne({ where: { id: query } }).then((locatedUpdatePower) => {
-                    res.status(200).json({
-                        power: locatedUpdatePower,
-                        message: "Power has been updated.",
-                        powerChanged: powerUpdated
-                    })
+        if (power.userId === req.user.id || req.user.role === 'admin') {
+            try {
+                
+                let powerUpdated = await Power.update(req.body, { where: { id: query } })
+                try {
+                    let locatedUpdatePower = await Power.findOne({ where: { id: query } })
+                        res.status(200).json({
+                            power: locatedUpdatePower,
+                            message: "Power has been updated.",
+                            powerChanged: powerUpdated
+                        })
+                } catch (error){
+                    res.status(500).json(error)
+                }
+            } catch (error) {
+                res.status(500).json({
+                    message: error
                 })
-            })
-            .catch((err) => res.json({ error: err }))
-    } else {
-        res.status(401).json('Not allowed bud')
+            }
+        } else {
+            res.status(401).json('Not allowed bud')
+        }
+    } catch (error) {
+        res.status(500).json(error)
     }
 })
 
-router.delete('/:id', validateSession, (req, res) => {
-    let power = Power.findOne({ where: { id: req.params.id } })
-    if (power.userId === req.user.id || req.user.role === 'admin') {
-        Power.destroy({
-            where: { id: req.params.id }
-        })
-            .then(power => res.status(200).json(power))
-            .catch(err => res.json({ error: err }))
-    } else {
-        res.status(401).json('access level not achieved sorry')
+router.delete('/:id', validateSession, async (req, res) => {
+    try {
+        let power = await Power.findOne({ where: { id: req.params.id } })
+        
+        if (power.userId === req.user.id || req.user.role === 'admin') {
+            let power = await Power.destroy({
+                where: { id: req.params.id }
+            })
+            res.status(200).json(power)
+        } else {
+            res.status(401).json('access level not achieved sorry')
+        }
+    } catch (error) {
+           res.status(500).json(error)
     }
 })
 
