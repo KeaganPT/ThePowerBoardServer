@@ -11,7 +11,7 @@ app.use(require('./middleware/headers'))
 
 app.use("/user", controllers.usercontroller)
 app.use("/powers", controllers.powerscontroller)
-app.use("/character", controllers.charactercontroller)
+app.use("/characters", controllers.charactercontroller)
 
 db.authenticate()
 .then(() => db.sync()) // => {force:true}
