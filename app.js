@@ -21,4 +21,4 @@ db.authenticate()
     .catch((err) => {
         console.log("[server:] Server Crashed");
         console.error(err);
-    })
+    }) 
