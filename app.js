@@ -9,6 +9,7 @@ app.use(express.json())
 
 app.use(require('./middleware/headers'))
 
+//Controllers
 app.use("/user", controllers.usercontroller)
 app.use("/powers", controllers.powerscontroller)
 app.use("/characters", controllers.charactercontroller)
@@ -22,3 +23,4 @@ db.authenticate()
         console.log("[server:] Server Crashed");
         console.error(err);
     }) 
+
