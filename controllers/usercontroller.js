@@ -29,6 +29,7 @@ router.post('/register', (req,res) => {
 
 //Log in
 router.post('/login', function(req,res) {
+    console.log('I work heroku please')
     User.findOne({
         where: {
             userName: req.body.userName
